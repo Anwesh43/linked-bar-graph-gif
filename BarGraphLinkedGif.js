@@ -99,6 +99,7 @@ class LinkedBarGraph {
 class Renderer {
     constructor() {
         this.lbg = new LinkedBarGraph()
+        this.running = true
     }
 
     draw(context, cb) {
@@ -116,6 +117,18 @@ class Renderer {
                 cb()
             }
         })
+    }
+
+    render(context, cb, endcb) {
+        while(this.running) {
+            this.draw(context, cb)
+            this.update(() => {
+                this.running = false
+                if (endcb) {
+                    endcb()
+                }
+            })
+        }
     }
 
 }
@@ -137,8 +150,10 @@ class LinkedBarGraphGif {
 
     render() {
         this.gifencoder.start()
-        this.renderer.draw(this.context, (context) => {
+        this.renderer.render(this.context, (context) => {
             this.gifencoder.addFrame(context)
+        }, () => {
+            this.gifencoder.end()
         })
     }
 
