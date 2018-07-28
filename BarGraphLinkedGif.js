@@ -45,6 +45,7 @@ class BGNode {
         const hGap = h / 2
         context.save()
         context.translate(this.i * gap, h/2)
+        context.fillStyle = '#0097A7'
         context.fillRect(0, 0, gap, h / 2 * (1 - this.state.scale) * (1 - 2 * (this.i % 2)))
         context.restore()
     }
@@ -92,4 +93,26 @@ class LinkedBarGraph {
     startUpdating() {
         this.curr.startUpdating()
     }
+}
+
+class Renderer {
+    constructor() {
+        this.lbg = new LinkedBarGraph()
+    }
+
+    draw(context, cb) {
+        this.lbg.draw(context)
+        cb(context)
+    }
+
+    update(cb) {
+        this.lbg.update((i) => {
+            if (i != 0) {
+                this.lbg.startUpdating()
+            } else {
+                cb()
+            }
+        })
+    }
+
 }
