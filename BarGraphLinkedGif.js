@@ -69,3 +69,27 @@ class BGNode {
         return this
     }
 }
+
+class LinkedBarGraph {
+    constructor() {
+        this.curr = new BGNode()
+        this.dir = 1
+    }
+
+    draw(context) {
+        this.curr.draw(context)
+    }
+
+    update(cb) {
+        this.curr.update(() => {
+            this.curr = this.curr.getNext(this.dir, () => {
+                this.dir *= -1
+            })
+            cb(this.curr.i)
+        })
+    }
+
+    startUpdating() {
+        this.curr.startUpdating()
+    }
+}
