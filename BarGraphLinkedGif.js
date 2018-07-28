@@ -157,6 +157,10 @@ class LinkedBarGraphGif {
         })
     }
 
-
-
+    static init(fn) {
+        const gif = new LinkedBarGraphGif(fn)
+        gif.render()
+    }
 }
+
+module.exports = LinkedBarGraphGif.init 
