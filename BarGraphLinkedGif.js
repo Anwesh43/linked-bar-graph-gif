@@ -1,5 +1,6 @@
 const nodes = 5, w = 300, h = 600
-
+const Canvas = require('canvas')
+const GifEncoder = require('GifEncoder')
 class State {
     constructor() {
         this.scale = 0
@@ -101,6 +102,8 @@ class Renderer {
     }
 
     draw(context, cb) {
+        context.fillStyle = '#BDBDBD'
+        context.fillRect(0, 0, w, h)
         this.lbg.draw(context)
         cb(context)
     }
@@ -114,5 +117,31 @@ class Renderer {
             }
         })
     }
+
+}
+
+class LinkedBarGraphGif {
+    constructor(fn) {
+        this.renderer = new Renderer()
+        this.gifencoder = new GifEncoder(w, h)
+        this.canvas = new Canvas(w, h)
+        this.initEncoder(fn)
+    }
+
+    initEncoder() {
+        this.context = this.canvas.getContext('2d')
+        this.gifencoder.setInterval(70)
+        this.gifencoder.setRepeat(0)
+        this.gifencoder.createReadStream().pipe(fs.createWriteStream(fn))
+    }
+
+    render() {
+        this.gifencoder.start()
+        this.renderer.draw(this.context, (context) => {
+            this.gifencoder.addFrame(context)
+        })
+    }
+
+
 
 }
